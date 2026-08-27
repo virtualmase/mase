@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MASE Skill: a reusable front-end intelligence workflow for accessible, legible, trustworthy AI-era product interfaces.">
+  <meta name="color-scheme" content="dark light">
+  <title>MASE Skill — Front-end Intelligence</title>
+  <style>
+    :root { --ink:#0b0c11; --ink-2:#10131d; --panel:#171a26; --paper:#f6f4ee; --mist:#b8bfcb; --muted:#7d8596; --line:rgba(246,244,238,.15); --line-strong:rgba(246,244,238,.31); --acid:#ccff9e; --violet:#aa9dff; --sky:#79dbff; --max:1180px; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; min-width:320px; background:var(--ink); color:var(--paper); font:400 16px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:inherit; }
+    button { font:inherit; }
+    .skip { position:absolute; z-index:99; top:-80px; left:16px; padding:10px 14px; background:var(--acid); color:var(--ink); font-weight:700; text-decoration:none; }
+    .skip:focus { top:14px; }
+    .shell { width:min(calc(100% - 40px),var(--max)); margin-inline:auto; }
+    .mono,.nav a,.eyebrow,.tag,.cmd,.meta,.button,.footer p { font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; font-size:10px; letter-spacing:.11em; text-transform:uppercase; }
+    .header { position:sticky; top:0; z-index:10; border-bottom:1px solid var(--line); background:color-mix(in srgb,var(--ink) 88%,transparent); backdrop-filter:blur(18px); }
+    .header-in { min-height:70px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+    .brand { display:inline-flex; align-items:center; gap:10px; font-size:18px; font-weight:760; letter-spacing:-.04em; text-decoration:none; }
+    .brand-mark { display:grid; place-items:center; width:27px; height:27px; border:1px solid var(--violet); color:var(--violet); font:700 11px/1 ui-monospace,monospace; }
+    .nav { display:flex; gap:22px; }
+    .nav a { color:var(--mist); text-decoration:none; }
+    .nav a:hover,.nav a:focus-visible { color:var(--acid); }
+    .hero { position:relative; overflow:clip; padding:clamp(84px,12vw,158px) 0 70px; border-bottom:1px solid var(--line); }
+    .hero::before { content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at 79% 42%,rgba(170,157,255,.21),transparent 20rem),radial-gradient(circle at 16% 90%,rgba(121,219,255,.13),transparent 21rem),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px); background-size:auto,auto,48px 48px,48px 48px; mask-image:linear-gradient(to bottom,black,transparent); }
+    .hero-in { position:relative; display:grid; grid-template-columns:minmax(0,1.25fr) minmax(270px,.75fr); gap:62px; align-items:end; }
+    .eyebrow { display:flex; align-items:center; gap:10px; margin:0 0 23px; color:var(--sky); }
+    .eyebrow::before { content:""; width:32px; height:1px; background:currentColor; }
+    h1,h2,h3,p { margin-top:0; }
+    h1 { max-width:880px; margin-bottom:25px; font-size:clamp(3.7rem,8.4vw,7.8rem); line-height:.87; letter-spacing:-.075em; font-weight:680; }
+    h1 em,h2 em { color:var(--violet); font-family:Georgia,"Times New Roman",serif; font-weight:400; letter-spacing:-.055em; }
+    .hero-copy { max-width:650px; color:var(--mist); font-size:clamp(17px,2vw,21px); }
+    .hero-copy strong { color:var(--paper); }
+    .buttons { display:flex; flex-wrap:wrap; gap:10px; margin-top:32px; }
+    .button { min-height:47px; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:0 17px; border:1px solid var(--line-strong); background:transparent; color:var(--paper); font-weight:600; text-decoration:none; transition:.18s ease; }
+    .button.primary { color:var(--ink); border-color:var(--paper); background:var(--paper); }
+    .button.primary:hover,.button.primary:focus-visible { color:var(--ink); border-color:var(--acid); background:var(--acid); }
+    .button.ghost:hover,.button.ghost:focus-visible { color:var(--violet); border-color:var(--violet); }
+    .status { border:1px solid var(--line-strong); background:linear-gradient(145deg,rgba(170,157,255,.12),rgba(121,219,255,.04)); }
+    .status-head { display:flex; justify-content:space-between; gap:10px; padding:14px; border-bottom:1px solid var(--line); color:var(--muted); }
+    .live { display:inline-flex; align-items:center; gap:7px; color:var(--acid); }
+    .live::before { content:""; width:7px; height:7px; border-radius:50%; background:currentColor; box-shadow:0 0 15px currentColor; }
+    .status-row { display:grid; grid-template-columns:1fr auto; gap:14px; padding:17px 14px; border-bottom:1px solid var(--line); }
+    .status-row:last-child { border-bottom:0; }
+    .status-row strong { display:block; margin-bottom:4px; font-size:14px; letter-spacing:-.015em; }
+    .status-row span { color:var(--mist); font-size:12px; }
+    .status-label { align-self:start; padding:4px 6px; border:1px solid rgba(204,255,158,.4); color:var(--acid); font:500 9px/1 ui-monospace,monospace; letter-spacing:.08em; text-transform:uppercase; }
+    section { padding:clamp(72px,9vw,120px) 0; }
+    .section-head { display:grid; grid-template-columns:.85fr 1.15fr; gap:55px; align-items:end; margin-bottom:43px; }
+    h2 { margin-bottom:0; font-size:clamp(2.7rem,5vw,5rem); line-height:.91; letter-spacing:-.067em; font-weight:660; }
+    .section-copy { max-width:540px; color:var(--mist); font-size:16px; }
+    .light { background:var(--paper); color:var(--ink); }
+    .light .eyebrow { color:#5446c5; }
+    .light .section-copy { color:#585c66; }
+    .capabilities { display:grid; grid-template-columns:repeat(4,1fr); border:1px solid rgba(11,12,17,.22); border-right:0; }
+    .capability { min-height:248px; padding:22px; border-right:1px solid rgba(11,12,17,.22); }
+    .capability .meta { color:#5a50c8; }
+    .capability h3 { margin:29px 0 10px; font-size:22px; line-height:1; letter-spacing:-.045em; }
+    .capability p { margin:0; color:#565a65; font-size:14px; }
+    .directory { background:var(--panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+    .directory-grid { display:grid; grid-template-columns:minmax(260px,.78fr) minmax(0,1.22fr); gap:48px; align-items:start; }
+    .directory-intro { position:sticky; top:110px; }
+    .directory-intro p { max-width:395px; color:var(--mist); font-size:16px; }
+    .skill-list { margin:27px 0 0; padding:0; list-style:none; border-top:1px solid var(--line); }
+    .skill-list button { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:15px 0; border:0; border-bottom:1px solid var(--line); background:transparent; color:var(--mist); cursor:pointer; text-align:left; font-size:14px; }
+    .skill-list button span { color:var(--muted); font:500 10px/1 ui-monospace,monospace; letter-spacing:.08em; text-transform:uppercase; }
+    .skill-list button:hover,.skill-list button:focus-visible,.skill-list button[aria-selected="true"] { color:var(--paper); }
+    .skill-list button[aria-selected="true"] span { color:var(--acid); }
+    .skill-panel { min-height:445px; padding:clamp(24px,4vw,42px); border:1px solid var(--line-strong); background:linear-gradient(145deg,rgba(170,157,255,.12),rgba(121,219,255,.03)); }
+    .skill-panel-head { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:76px; }
+    .tag { padding:6px 8px; border:1px solid rgba(121,219,255,.42); color:var(--sky); }
+    .tag.acid { border-color:rgba(204,255,158,.42); color:var(--acid); }
+    .skill-panel h3 { max-width:650px; margin-bottom:17px; font-size:clamp(2.1rem,4.6vw,4.1rem); line-height:.94; letter-spacing:-.06em; }
+    .skill-panel > p { max-width:650px; color:var(--mist); font-size:17px; }
+    .output-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; margin-top:31px; background:var(--line); }
+    .output { min-height:104px; padding:15px; background:var(--panel); }
+    .output strong { display:block; margin-bottom:7px; color:var(--paper); font:600 10px/1.4 ui-monospace,monospace; letter-spacing:.1em; text-transform:uppercase; }
+    .output span { color:var(--mist); font-size:13px; }
+    .package { border-bottom:1px solid var(--line); }
+    .package-grid { display:grid; grid-template-columns:.88fr 1.12fr; gap:50px; align-items:end; }
+    .package-copy { color:var(--mist); font-size:16px; }
+    .package-copy strong { color:var(--paper); }
+    .tree { overflow:auto; padding:25px; border:1px solid var(--line-strong); background:var(--ink-2); }
+    .tree pre { margin:0; color:var(--mist); font:400 13px/1.7 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
+    .tree .accent { color:var(--acid); }.tree .muted { color:var(--muted); }.tree .bright { color:var(--paper); }
+    .contract { padding-bottom:0; }
+    .contract-in { padding-bottom:clamp(72px,9vw,112px); border-bottom:1px solid var(--line); }
+    .contract-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+    .contract-card { min-height:258px; display:flex; flex-direction:column; padding:22px; background:var(--ink); }
+    .contract-card .meta { color:var(--sky); }
+    .contract-card h3 { margin:26px 0 11px; font-size:23px; line-height:1; letter-spacing:-.045em; }
+    .contract-card p { margin:0; color:var(--mist); font-size:14px; }
+    .contract-card a { margin-top:auto; padding-top:24px; color:var(--acid); font:500 10px/1.4 ui-monospace,monospace; letter-spacing:.08em; text-decoration:none; text-transform:uppercase; }
+    .contract-card a:hover,.contract-card a:focus-visible { color:var(--paper); }
+    footer { padding:31px 0 46px; }
+    .footer-in { display:flex; flex-wrap:wrap; justify-content:space-between; gap:15px 26px; color:var(--muted); }
+    .footer-in p { margin:0; }
+    :focus-visible { outline:2px solid var(--acid); outline-offset:4px; }
+    @media(max-width:880px) { .hero-in,.section-head,.directory-grid,.package-grid { grid-template-columns:1fr; gap:34px; }.status{max-width:560px}.directory-intro{position:static}.capabilities{grid-template-columns:1fr 1fr}.capability:nth-child(3){border-top:1px solid rgba(11,12,17,.22)} }
+    @media(max-width:620px) { .shell{width:min(calc(100% - 30px),var(--max))}.header-in{min-height:62px}.nav{gap:13px}.nav a:nth-child(2){display:none}h1{font-size:3.5rem}.capabilities,.output-grid,.contract-grid{grid-template-columns:1fr}.capability{min-height:0;border-top:1px solid rgba(11,12,17,.22)}.capability:first-child{border-top:0}.skill-panel-head{margin-bottom:50px} }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#directory">Skip to the skill directory</a>
+  <header class="header">
+    <div class="shell header-in">
+      <a class="brand" href="#top" aria-label="MASE Skill home"><span class="brand-mark">M/</span>MASE Skill</a>
+      <nav class="nav" aria-label="Primary navigation"><a href="#directory">Directory</a><a href="#package">Package</a><a href="#contract">Standards</a></nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="shell hero-in">
+        <div>
+          <p class="eyebrow">Skill directory / front-end intelligence</p>
+          <h1 id="hero-title">The skill for interfaces that remain <em>useful after generation.</em></h1>
+          <p class="hero-copy">MASE is a reusable front-end intelligence workflow. It helps turn a vague request or model-generated first draft into a <strong>legible, accessible, resilient, and accountable product experience.</strong></p>
+          <div class="buttons"><a class="button primary" href="#directory">Inspect the skill <span aria-hidden="true">↓</span></a><a class="button ghost" href="proof/">Open the first proof <span aria-hidden="true">↗</span></a></div>
+        </div>
+        <aside class="status" aria-label="MASE Skill status">
+          <div class="status-head meta"><span>Skill state</span><span class="live">Validated</span></div>
+          <div class="status-row"><div><strong>Scope</strong><span>UX, UI, CX, front-end proofs, AI interaction.</span></div><span class="status-label">Defined</span></div>
+          <div class="status-row"><div><strong>Data boundary</strong><span>No collection or agent action by default.</span></div><span class="status-label">Default</span></div>
+          <div class="status-row"><div><strong>Quality loop</strong><span>Frame, build, test, release, learn.</span></div><span class="status-label">Reusable</span></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="light" aria-labelledby="why-title">
+      <div class="shell">
+        <div class="section-head"><div><p class="eyebrow">01 / Why MASE</p><h2 id="why-title">Use models. Own the <em>decisions around code.</em></h2></div><p class="section-copy">The differentiator is not a claim that any tool always “wins.” It is a better operating system for turning generated output into something a real user can understand, control, and rely on.</p></div>
+        <div class="capabilities">
+          <article class="capability"><p class="meta">01 / Frame</p><h3>Purpose before pixels</h3><p>Define the reader, job, authority boundary, state, and failure condition before choosing style or components.</p></article>
+          <article class="capability"><p class="meta">02 / Reveal</p><h3>State before surprise</h3><p>Expose context, source, review, progress, uncertainty, and escalation at the moment people need them.</p></article>
+          <article class="capability"><p class="meta">03 / Evaluate</p><h3>Evidence before assertion</h3><p>Test task clarity, keyboard paths, responsiveness, data handling, and hard states rather than admiring a screenshot.</p></article>
+          <article class="capability"><p class="meta">04 / Preserve</p><h3>Systems before spectacle</h3><p>Keep the work portable, inspectable, and reversible so it can survive new tools, devices, and product conditions.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="directory" id="directory" aria-labelledby="directory-title">
+      <div class="shell directory-grid">
+        <div class="directory-intro"><p class="eyebrow">02 / Skill directory</p><h2 id="directory-title">Choose the work you need to make more <em>legible.</em></h2><p>This local-only directory illustrates how MASE changes its workflow for a specific front-end problem. Selecting an entry changes the visible guidance in this browser only; it does not collect, store, transmit, or score a choice.</p>
+          <div class="skill-list" role="tablist" aria-label="MASE Skill work modes">
+            <button role="tab" id="audit-tab" aria-selected="true" aria-controls="skill-panel" data-mode="audit">Audit a draft <span>01 / selected</span></button>
+            <button role="tab" id="prototype-tab" aria-selected="false" aria-controls="skill-panel" data-mode="prototype">Prototype a flow <span>02 / inspect</span></button>
+            <button role="tab" id="benchmark-tab" aria-selected="false" aria-controls="skill-panel" data-mode="benchmark">Benchmark an output <span>03 / inspect</span></button>
+            <button role="tab" id="harden-tab" aria-selected="false" aria-controls="skill-panel" data-mode="harden">Harden an AI workflow <span>04 / inspect</span></button>
+          </div>
+        </div>
+        <div class="skill-panel" id="skill-panel" role="tabpanel" aria-labelledby="audit-tab" aria-live="polite" tabindex="0">
+          <div class="skill-panel-head"><span class="tag" id="mode-number">01 / Audit</span><span class="tag acid">No collection</span></div>
+          <h3 id="mode-title">Audit a draft without confusing polish for product quality.</h3>
+          <p id="mode-copy">Review an existing page or generated interface against one named reader and task. Inspect hierarchy, state, human authority, accessibility, responsiveness, data behavior, and the critical failure path before prescribing redesign.</p>
+          <div class="output-grid"><div class="output"><strong id="output-one-label">Outputs</strong><span id="output-one">A short issue inventory ordered by user harm, evidence, and reversibility.</span></div><div class="output"><strong id="output-two-label">First boundary</strong><span id="output-two">Do not add a feature, integration, or visual system until the reader, job, and risk are clear.</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="package" id="package" aria-labelledby="package-title">
+      <div class="shell package-grid">
+        <div><p class="eyebrow">03 / Portable package</p><h2 id="package-title">A skill is only useful if another builder can <em>inspect it.</em></h2></div>
+        <div><p class="package-copy">The MASE package keeps its procedural instructions concise, moves standards into a reference file, and provides a reusable experience brief. It has no secret prompt, vendor lock-in, or opaque scoring mechanism. <strong>Fork it, inspect it, improve it.</strong></p><div class="buttons"><a class="button primary" href="https://github.com/virtualmase/mase/tree/main/skills/mase-skill" target="_blank" rel="noopener noreferrer">View skill source <span aria-hidden="true">↗</span></a><a class="button ghost" href="https://github.com/virtualmase/mase" target="_blank" rel="noopener noreferrer">Open repository <span aria-hidden="true">↗</span></a></div></div>
+      </div>
+      <div class="shell" style="margin-top:44px"><div class="tree" aria-label="MASE Skill package file tree"><pre><span class="bright">skills/mase-skill/</span>
+├── <span class="accent">SKILL.md</span>                     <span class="muted"># workflow and boundaries</span>
+├── references/
+│   └── <span class="accent">quality-baseline.md</span>      <span class="muted"># standards and claim limits</span>
+└── templates/
+    └── <span class="accent">experience-brief.md</span>      <span class="muted"># reusable framing document</span></pre></div></div>
+    </section>
+
+    <section class="contract" id="contract" aria-labelledby="contract-title">
+      <div class="shell contract-in">
+        <div class="section-head"><div><p class="eyebrow">04 / Quality contract</p><h2 id="contract-title">Ahead of the curve means ahead of the <em>failure modes.</em></h2></div><p class="section-copy">MASE has a high bar for “better.” It means clearer tasks, visible state, human authority, fast response, data restraint, and a release record—not a louder design trend or a wider vendor claim.</p></div>
+        <div class="contract-grid">
+          <article class="contract-card"><p class="meta">Accessibility</p><h3>Make the base layer work.</h3><p>Start with semantic structure, keyboard-visible focus, responsive content, and understandable controls.</p><a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener noreferrer">WCAG 2.2 ↗</a></article>
+          <article class="contract-card"><p class="meta">Responsiveness</p><h3>Give feedback before doubt.</h3><p>Design critical interactions to acknowledge people promptly, with no unnecessary runtime work or artificial wait.</p><a href="https://web.dev/articles/inp" target="_blank" rel="noopener noreferrer">Interaction to Next Paint ↗</a></article>
+          <article class="contract-card"><p class="meta">Human–AI UX</p><h3>Keep authority legible.</h3><p>Make roles, review, limits, and the ability to challenge AI-assisted work visible in the interface.</p><a href="https://airc.nist.gov/airmf-resources/airmf/appendices/app-c-ai-risk-management-and-human-ai-interaction/" target="_blank" rel="noopener noreferrer">NIST human–AI guidance ↗</a></article>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer><div class="shell footer-in"><p>MASE Skill / front-end intelligence and execution</p><p>v0.1 · portable · no telemetry · no data collection</p><p>© <span id="year">2026</span> virtualmase</p></div></footer>
+  <script>
+    const modes={
+      audit:{number:'01 / Audit',title:'Audit a draft without confusing polish for product quality.',copy:'Review an existing page or generated interface against one named reader and task. Inspect hierarchy, state, human authority, accessibility, responsiveness, data behavior, and the critical failure path before prescribing redesign.',oneLabel:'Outputs',one:'A short issue inventory ordered by user harm, evidence, and reversibility.',twoLabel:'First boundary',two:'Do not add a feature, integration, or visual system until the reader, job, and risk are clear.'},
+      prototype:{number:'02 / Prototype',title:'Prototype the smallest moment that can reduce uncertainty.',copy:'Build one portable proof for one task, one state, or one decision. Show the expected path and the hard path before committing to accounts, agent actions, data capture, or a larger platform build.',oneLabel:'Outputs',one:'A small proof, a task flow, acceptance checks, and a named next question.',twoLabel:'First boundary',two:'Keep the interaction local-only unless data classification, permission, retention, and human escalation are approved.'},
+      benchmark:{number:'03 / Benchmark',title:'Benchmark a defined task—not an entire model worldview.',copy:'Compare outputs only when the task, input conditions, tool version, rubric, reviewer, date, and limitations are recorded. Separate code-generation speed from product judgment, accessibility, and real task completion.',oneLabel:'Outputs',one:'A reproducible evaluation record with scope, criteria, evidence, and limitation.',twoLabel:'First boundary',two:'A narrow result does not justify a universal claim that one model or workflow is always better.'},
+      harden:{number:'04 / Harden',title:'Make an AI workflow clear at the moments trust can fail.',copy:'Expose relevant context, source boundaries, automation degree, human reviewer, uncertain outcome, recovery action, and evidence record. Let people understand what the system will and will not do before a consequential step.',oneLabel:'Outputs',one:'An authority map, state model, exception path, and release boundary.',twoLabel:'First boundary',two:'Do not obscure uncertainty with empty confidence language, decorative progress, or hidden agent action.'}
+    };
+    const panel=document.getElementById('skill-panel');
+    const ui={number:document.getElementById('mode-number'),title:document.getElementById('mode-title'),copy:document.getElementById('mode-copy'),oneLabel:document.getElementById('output-one-label'),one:document.getElementById('output-one'),twoLabel:document.getElementById('output-two-label'),two:document.getElementById('output-two')};
+    document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>{const mode=modes[button.dataset.mode];document.querySelectorAll('[data-mode]').forEach(item=>{item.setAttribute('aria-selected','false');item.querySelector('span').textContent=item===button?'selected':'inspect';});button.setAttribute('aria-selected','true');panel.setAttribute('aria-labelledby',button.id);ui.number.textContent=mode.number;ui.title.textContent=mode.title;ui.copy.textContent=mode.copy;ui.oneLabel.textContent=mode.oneLabel;ui.one.textContent=mode.one;ui.twoLabel.textContent=mode.twoLabel;ui.two.textContent=mode.two;}));
+    document.getElementById('year').textContent=new Date().getFullYear();
+  </script>
+</body>
+</html>

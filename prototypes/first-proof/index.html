@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MASE front-end proof: an interactive quality lens for AI-era product interfaces.">
+  <meta name="color-scheme" content="dark light">
+  <title>MASE — Interface Quality Lens</title>
+  <style>
+    :root {
+      --ink: #0b0c11;
+      --panel: #141722;
+      --panel-raised: #1d2131;
+      --paper: #f5f3ed;
+      --mist: #b9c0ce;
+      --muted: #7d8596;
+      --line: rgba(245,243,237,.15);
+      --line-strong: rgba(245,243,237,.33);
+      --acid: #c9ff9a;
+      --violet: #a699ff;
+      --sky: #78d8ff;
+      --warm: #ffcb7a;
+      --max: 1180px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; min-width: 320px; background: var(--ink); color: var(--paper); font: 400 16px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    a { color: inherit; }
+    button { font: inherit; }
+    .skip { position: absolute; top: -80px; left: 16px; z-index: 100; padding: 10px 14px; background: var(--acid); color: var(--ink); font-weight: 700; text-decoration: none; }
+    .skip:focus { top: 14px; }
+    .shell { width: min(calc(100% - 40px), var(--max)); margin-inline: auto; }
+    .eyebrow, .kicker, .nav a, .tag, .metric-label, .footnote { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; letter-spacing: .11em; text-transform: uppercase; }
+    .header { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--ink) 88%, transparent); border-bottom: 1px solid var(--line); backdrop-filter: blur(18px); }
+    .header-in { min-height: 70px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-size: 18px; font-weight: 750; letter-spacing: -.04em; }
+    .brand-mark { display: grid; place-items: center; width: 27px; height: 27px; border: 1px solid var(--violet); color: var(--violet); font: 700 11px/1 ui-monospace, monospace; }
+    .nav { display: flex; align-items: center; gap: 22px; }
+    .nav a { color: var(--mist); text-decoration: none; }
+    .nav a:hover, .nav a:focus-visible { color: var(--acid); }
+    .hero { position: relative; overflow: clip; padding: clamp(84px, 12vw, 160px) 0 62px; border-bottom: 1px solid var(--line); }
+    .hero::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 78% 40%, rgba(166,153,255,.2), transparent 19rem), radial-gradient(circle at 20% 90%, rgba(120,216,255,.13), transparent 22rem), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px); background-size: auto, auto, 48px 48px, 48px 48px; mask-image: linear-gradient(to bottom, black, transparent); }
+    .hero-in { position: relative; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr); gap: 60px; align-items: end; }
+    .eyebrow { display: flex; gap: 10px; align-items: center; margin: 0 0 23px; color: var(--sky); }
+    .eyebrow::before { content: ""; width: 31px; height: 1px; background: currentColor; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 870px; margin-bottom: 24px; font-size: clamp(3.7rem, 8vw, 7.8rem); line-height: .88; letter-spacing: -.075em; font-weight: 670; }
+    h1 em, h2 em { color: var(--violet); font-family: Georgia, "Times New Roman", serif; font-weight: 400; letter-spacing: -.055em; }
+    .hero-copy { max-width: 645px; color: var(--mist); font-size: clamp(17px, 2vw, 21px); }
+    .hero-copy strong { color: var(--paper); }
+    .button-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
+    .button { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 0 17px; border: 1px solid var(--line-strong); background: transparent; color: var(--paper); font: 600 11px/1 ui-monospace, monospace; letter-spacing: .09em; text-decoration: none; text-transform: uppercase; transition: background .18s ease, border-color .18s ease, color .18s ease; }
+    .button.primary { background: var(--paper); border-color: var(--paper); color: var(--ink); }
+    .button.primary:hover, .button.primary:focus-visible { background: var(--acid); border-color: var(--acid); }
+    .button.ghost:hover, .button.ghost:focus-visible { border-color: var(--violet); color: var(--violet); }
+    .signal-board { border: 1px solid var(--line-strong); background: linear-gradient(145deg, rgba(166,153,255,.12), rgba(120,216,255,.04)); }
+    .signal-head { display: flex; justify-content: space-between; gap: 10px; padding: 14px; border-bottom: 1px solid var(--line); color: var(--muted); }
+    .pulse { display: inline-flex; align-items: center; gap: 7px; color: var(--acid); }
+    .pulse::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 14px currentColor; }
+    .signal-row { display: grid; grid-template-columns: 1fr auto; gap: 15px; padding: 17px 14px; border-bottom: 1px solid var(--line); }
+    .signal-row:last-child { border-bottom: 0; }
+    .signal-row strong { display: block; margin-bottom: 3px; font-size: 14px; letter-spacing: -.015em; }
+    .signal-row span { color: var(--mist); font-size: 12px; }
+    .state { align-self: start; padding: 4px 6px; color: var(--acid); border: 1px solid rgba(201,255,154,.4); font: 500 9px/1 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
+    section { padding: clamp(72px, 9vw, 124px) 0; }
+    .section-head { display: grid; grid-template-columns: .85fr 1.15fr; gap: 58px; align-items: end; margin-bottom: 42px; }
+    h2 { margin-bottom: 0; font-size: clamp(2.7rem, 5vw, 5rem); line-height: .91; letter-spacing: -.065em; font-weight: 650; }
+    .section-copy { max-width: 540px; color: var(--mist); font-size: 16px; }
+    .contrast { background: var(--paper); color: var(--ink); }
+    .contrast .eyebrow { color: #5244c3; }
+    .contrast .section-copy { color: #545863; }
+    .principles { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid rgba(11,12,17,.22); border-right: 0; }
+    .principle { min-height: 238px; padding: 22px; border-right: 1px solid rgba(11,12,17,.22); }
+    .principle .kicker { color: #5850c9; }
+    .principle h3 { margin: 28px 0 10px; font-size: 21px; line-height: 1; letter-spacing: -.045em; }
+    .principle p { margin: 0; color: #555963; font-size: 14px; }
+    .lens { background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .lens-grid { display: grid; grid-template-columns: minmax(260px, .75fr) minmax(0, 1.25fr); gap: 44px; align-items: start; }
+    .lens-intro { position: sticky; top: 108px; }
+    .lens-intro p { max-width: 390px; color: var(--mist); font-size: 16px; }
+    .lens-tabs { margin: 28px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+    .lens-tab { width: 100%; display: flex; justify-content: space-between; gap: 12px; padding: 15px 0; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--mist); cursor: pointer; font-size: 14px; text-align: left; }
+    .lens-tab span { color: var(--muted); font: 500 10px/1.3 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
+    .lens-tab:hover, .lens-tab:focus-visible, .lens-tab[aria-selected="true"] { color: var(--paper); }
+    .lens-tab[aria-selected="true"] span { color: var(--acid); }
+    .lens-output { min-height: 450px; padding: clamp(23px, 4vw, 42px); border: 1px solid var(--line-strong); background: linear-gradient(145deg, rgba(166,153,255,.11), transparent 45%); }
+    .lens-state { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 82px; }
+    .tag { padding: 6px 8px; color: var(--sky); border: 1px solid rgba(120,216,255,.38); }
+    .tag.safe { color: var(--acid); border-color: rgba(201,255,154,.38); }
+    .lens-output h3 { max-width: 680px; margin-bottom: 17px; font-size: clamp(2.1rem, 4.5vw, 4rem); line-height: .94; letter-spacing: -.06em; }
+    .lens-output > p { max-width: 650px; color: var(--mist); font-size: 17px; }
+    .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-top: 31px; background: var(--line); }
+    .check { min-height: 104px; padding: 15px; background: var(--panel); }
+    .check strong { display: block; margin-bottom: 7px; color: var(--paper); font: 600 10px/1.4 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; }
+    .check span { color: var(--mist); font-size: 13px; }
+    .proof { border-bottom: 1px solid var(--line); }
+    .proof-grid { display: grid; grid-template-columns: .92fr 1.08fr; gap: 42px; align-items: end; }
+    .proof-copy { color: var(--mist); font-size: 16px; }
+    .proof-copy strong { color: var(--paper); }
+    .flow { border-top: 1px solid var(--line); }
+    .flow-step { display: grid; grid-template-columns: 62px .75fr 1.25fr; gap: 18px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--line); }
+    .flow-no { color: var(--violet); font: 500 11px/1 ui-monospace, monospace; letter-spacing: .08em; }
+    .flow-step h3 { margin: 0; font-size: 18px; letter-spacing: -.04em; }
+    .flow-step p { margin: 0; color: var(--mist); font-size: 14px; }
+    .evidence { padding-bottom: 0; }
+    .evidence-in { padding-bottom: clamp(74px, 9vw, 112px); border-bottom: 1px solid var(--line); }
+    .evidence-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+    .evidence-card { min-height: 245px; display: flex; flex-direction: column; padding: 21px; background: var(--ink); }
+    .evidence-card .kicker { color: var(--sky); }
+    .evidence-card h3 { margin: 24px 0 11px; font-size: 22px; line-height: 1; letter-spacing: -.045em; }
+    .evidence-card p { margin: 0; color: var(--mist); font-size: 14px; }
+    .evidence-card a { margin-top: auto; padding-top: 23px; color: var(--acid); font: 500 10px/1.4 ui-monospace, monospace; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
+    .evidence-card a:hover, .evidence-card a:focus-visible { color: var(--paper); }
+    footer { padding: 30px 0 46px; }
+    .footer-in { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 15px 26px; color: var(--muted); }
+    .footer-in p { margin: 0; }
+    :focus-visible { outline: 2px solid var(--acid); outline-offset: 4px; }
+    @media (max-width: 880px) {
+      .hero-in, .section-head, .lens-grid, .proof-grid { grid-template-columns: 1fr; gap: 34px; }
+      .hero-in { align-items: start; }
+      .signal-board { max-width: 560px; }
+      .lens-intro { position: static; }
+      .principles { grid-template-columns: 1fr 1fr; }
+      .principle:nth-child(3) { border-top: 1px solid rgba(11,12,17,.22); }
+    }
+    @media (max-width: 620px) {
+      .shell { width: min(calc(100% - 30px), var(--max)); }
+      .header-in { min-height: 62px; }
+      .nav { gap: 13px; }
+      .nav a:nth-child(2) { display: none; }
+      h1 { font-size: 3.5rem; }
+      .principles, .check-grid, .evidence-grid { grid-template-columns: 1fr; }
+      .principle { min-height: 0; border-top: 1px solid rgba(11,12,17,.22); }
+      .principle:first-child { border-top: 0; }
+      .flow-step { grid-template-columns: 40px 1fr; gap: 12px; }
+      .flow-step p { grid-column: 2; }
+      .lens-state { margin-bottom: 50px; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to quality lens</a>
+  <header class="header">
+    <div class="shell header-in">
+      <a class="brand" href="#top" aria-label="MASE quality lens home"><span class="brand-mark">M/</span>MASE</a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="#lens">Quality lens</a>
+        <a href="#proof">The proof</a>
+        <a href="#evidence">Standards</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="shell hero-in">
+        <div>
+          <p class="eyebrow">MASE / front-end intelligence</p>
+          <h1 id="hero-title">The interface is where AI becomes <em>accountable.</em></h1>
+          <p class="hero-copy">Modern models can produce a first screen. MASE turns that output into a <strong>comprehensible product experience</strong>—with visible state, user control, resilient paths, and a record of why the interface deserves trust.</p>
+          <div class="button-row">
+            <a class="button primary" href="#lens">Use the quality lens <span aria-hidden="true">↓</span></a>
+            <a class="button ghost" href="#proof">See the operating proof <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+        <aside class="signal-board" aria-label="MASE interface quality signals">
+          <div class="signal-head kicker"><span>Interface signal</span><span class="pulse">Live criteria</span></div>
+          <div class="signal-row"><div><strong>Task clarity</strong><span>A reader can identify the job and next action.</span></div><span class="state">Test</span></div>
+          <div class="signal-row"><div><strong>Human control</strong><span>Authority, review, and escalation are made visible.</span></div><span class="state">Required</span></div>
+          <div class="signal-row"><div><strong>Data restraint</strong><span>Collection is absent until it is necessary and declared.</span></div><span class="state">Default</span></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="contrast" aria-labelledby="principles-title">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">01 / The difference</p><h2 id="principles-title">Beyond a plausible <em>first draft.</em></h2></div>
+          <p class="section-copy">MASE uses generative tools, but does not mistake generation for product judgment. The work begins where first-output confidence ends.</p>
+        </div>
+        <div class="principles">
+          <article class="principle"><p class="kicker">01 / Frame</p><h3>Purpose before pixels</h3><p>Name the reader, decision, constraint, and boundary before producing a visual direction.</p></article>
+          <article class="principle"><p class="kicker">02 / Reveal</p><h3>State before surprise</h3><p>Make progress, uncertainty, source, review, and failure paths comprehensible at the moment they matter.</p></article>
+          <article class="principle"><p class="kicker">03 / Test</p><h3>Evidence before assertion</h3><p>Evaluate keyboard access, task completion, responsiveness, and privacy rather than calling a screen “premium.”</p></article>
+          <article class="principle"><p class="kicker">04 / Preserve</p><h3>Systems before spectacle</h3><p>Keep the design portable, documented, and reversible so it remains useful after a tool or trend changes.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="lens" id="lens" aria-labelledby="lens-title">
+      <div class="shell lens-grid">
+        <div class="lens-intro">
+          <p class="eyebrow">02 / Local-only interactive</p>
+          <h2 id="lens-title">A lens for the moments users should not have to <em>guess.</em></h2>
+          <p>Select a quality dimension. This proof changes only the visible guidance in your browser. It does not collect, store, transmit, or score your choices.</p>
+          <div class="lens-tabs" role="tablist" aria-label="Interface quality dimensions">
+            <button class="lens-tab" role="tab" id="context-tab" aria-selected="true" aria-controls="lens-panel" data-lens="context">Context <span>01 / selected</span></button>
+            <button class="lens-tab" role="tab" id="control-tab" aria-selected="false" aria-controls="lens-panel" data-lens="control">Control <span>02 / inspect</span></button>
+            <button class="lens-tab" role="tab" id="recovery-tab" aria-selected="false" aria-controls="lens-panel" data-lens="recovery">Recovery <span>03 / inspect</span></button>
+            <button class="lens-tab" role="tab" id="record-tab" aria-selected="false" aria-controls="lens-panel" data-lens="record">Record <span>04 / inspect</span></button>
+          </div>
+        </div>
+        <div class="lens-output" id="lens-panel" role="tabpanel" aria-labelledby="context-tab" aria-live="polite" tabindex="0">
+          <div class="lens-state"><span class="tag" id="lens-number">01 / Context</span><span class="tag safe">No collection</span></div>
+          <h3 id="lens-heading">Show what the system knows—and what it does not.</h3>
+          <p id="lens-copy">A trustworthy interface gives the user enough context to orient themselves before asking them to decide, approve, or act. Sources, recency, scope, and uncertainty should be meaningful parts of the path—not documentation afterthoughts.</p>
+          <div class="check-grid">
+            <div class="check"><strong id="first-check-label">First check</strong><span id="first-check">Can a new user explain the job, current state, and next action in their own words?</span></div>
+            <div class="check"><strong id="second-check-label">Watch for</strong><span id="second-check">Confident outputs that hide missing context, stale information, or ambiguous ownership.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="proof" id="proof" aria-labelledby="proof-title">
+      <div class="shell">
+        <div class="proof-grid">
+          <div><p class="eyebrow">03 / The operating proof</p><h2 id="proof-title">Outcode the default by owning the <em>decisions around code.</em></h2></div>
+          <p class="proof-copy">A language model can accelerate drafts, variants, and implementation. MASE creates the higher-leverage system around it: a clear task model, sharp acceptance criteria, adversarial review, and a release record. <strong>Speed without a quality loop only makes weak decisions faster.</strong></p>
+        </div>
+        <div class="flow">
+          <article class="flow-step"><span class="flow-no">01</span><h3>Specify the moment</h3><p>Write the job story, authority boundary, user state, and likely failure condition before choosing components or prompts.</p></article>
+          <article class="flow-step"><span class="flow-no">02</span><h3>Generate deliberately</h3><p>Use model output as a hypothesis. Keep the prompt, constraints, source rights, and intended audience inspectable.</p></article>
+          <article class="flow-step"><span class="flow-no">03</span><h3>Review the hard path</h3><p>Test a small-screen, keyboard, delayed, unavailable, or uncertain version of the primary path—not only the polished happy path.</p></article>
+          <article class="flow-step"><span class="flow-no">04</span><h3>Release with a record</h3><p>Publish only the claim the prototype supports; document dependencies, evidence, limitation, owner, and rollback point.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="evidence" id="evidence" aria-labelledby="evidence-title">
+      <div class="shell evidence-in">
+        <div class="section-head"><div><p class="eyebrow">04 / Standards, not theater</p><h2 id="evidence-title">Designed to remain useful when the interface <em>changes.</em></h2></div><p class="section-copy">The MASE quality system is grounded in current web accessibility, interaction-performance, human-AI responsibility, and discovery guidance. It does not rely on a proprietary generator or a single model’s output style.</p></div>
+        <div class="evidence-grid">
+          <article class="evidence-card"><p class="kicker">Accessibility</p><h3>Make the base layer work.</h3><p>Semantic structure, keyboard-visible focus, understandable controls, and responsive content are quality requirements—not a retrofit.</p><a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener noreferrer">Read WCAG 2.2 ↗</a></article>
+          <article class="evidence-card"><p class="kicker">Responsiveness</p><h3>Give feedback before doubt.</h3><p>Interactions should acknowledge people quickly and reliably. Avoid unnecessary runtime work that makes users repeat themselves.</p><a href="https://web.dev/articles/inp" target="_blank" rel="noopener noreferrer">Read about INP ↗</a></article>
+          <article class="evidence-card"><p class="kicker">Human–AI interaction</p><h3>Keep authority legible.</h3><p>Make roles, review, limits, and the ability to challenge output visible when an interface mediates AI-assisted work.</p><a href="https://airc.nist.gov/airmf-resources/airmf/appendices/app-c-ai-risk-management-and-human-ai-interaction/" target="_blank" rel="noopener noreferrer">Read NIST guidance ↗</a></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-in"><p class="footnote">MASE / Front-end intelligence and execution</p><p class="footnote">Prototype state: local-only · no telemetry · no data collection</p><p class="footnote">© <span id="year">2026</span> virtualmase</p></div>
+  </footer>
+
+  <script>
+    const lenses = {
+      context: { number: '01 / Context', heading: 'Show what the system knows—and what it does not.', copy: 'A trustworthy interface gives the user enough context to orient themselves before asking them to decide, approve, or act. Sources, recency, scope, and uncertainty should be meaningful parts of the path—not documentation afterthoughts.', firstLabel: 'First check', first: 'Can a new user explain the job, current state, and next action in their own words?', secondLabel: 'Watch for', second: 'Confident outputs that hide missing context, stale information, or ambiguous ownership.' },
+      control: { number: '02 / Control', heading: 'Let people choose the degree of automation they can defend.', copy: 'The interface should make permission, approval, override, and escalation clear before an AI-assisted action reaches a consequential boundary. Control is not a settings page after the action has happened.', firstLabel: 'First check', first: 'Can the user tell which action they authorize, who reviews it, and how to stop or revise it?', secondLabel: 'Watch for', second: 'One-click automation that hides downstream consequences or makes human intervention expensive.' },
+      recovery: { number: '03 / Recovery', heading: 'Treat uncertainty as a designed state, not a broken one.', copy: 'Network delay, unavailable context, conflicting evidence, and model uncertainty are ordinary parts of modern product use. A resilient interface explains what happened and presents a safe, intelligible next step.', firstLabel: 'First check', first: 'When the expected result is unavailable, does the user see a reason, a boundary, and a useful alternative?', secondLabel: 'Watch for', second: 'Generic error language, silent fallback behavior, or repeated actions caused by absent feedback.' },
+      record: { number: '04 / Record', heading: 'Leave an evidence trail people can inspect and improve.', copy: 'For important AI-assisted work, users need an intelligible record of what informed an output, who reviewed it, what changed, and when the result should no longer be relied upon.', firstLabel: 'First check', first: 'Can an accountable person reconstruct the material input, human decision, and relevant limitation?', secondLabel: 'Watch for', second: 'A polished output with no visible source, history, review state, or expiration condition.' }
+    };
+    const panel = document.getElementById('lens-panel');
+    const ui = { number: document.getElementById('lens-number'), heading: document.getElementById('lens-heading'), copy: document.getElementById('lens-copy'), firstLabel: document.getElementById('first-check-label'), first: document.getElementById('first-check'), secondLabel: document.getElementById('second-check-label'), second: document.getElementById('second-check') };
+    document.querySelectorAll('[data-lens]').forEach(button => button.addEventListener('click', () => {
+      const lens = lenses[button.dataset.lens];
+      document.querySelectorAll('[data-lens]').forEach(item => { item.setAttribute('aria-selected', 'false'); item.querySelector('span').textContent = item === button ? 'selected' : 'inspect'; });
+      button.setAttribute('aria-selected', 'true');
+      panel.setAttribute('aria-labelledby', button.id);
+      ui.number.textContent = lens.number;
+      ui.heading.textContent = lens.heading;
+      ui.copy.textContent = lens.copy;
+      ui.firstLabel.textContent = lens.firstLabel;
+      ui.first.textContent = lens.first;
+      ui.secondLabel.textContent = lens.secondLabel;
+      ui.second.textContent = lens.second;
+    }));
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
