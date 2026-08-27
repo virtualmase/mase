@@ -1,0 +1,21 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependency and build output
+node_modules/
+dist/
+coverage/
+.cache/
+
+# Local editor and OS files
+.DS_Store
+.vscode/
+.idea/
+
+# Temporary review artifacts
+.tmp/
+preview/
