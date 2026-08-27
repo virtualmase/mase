@@ -13,7 +13,16 @@ const required = [
   'data-mode="prototype"',
   'data-mode="benchmark"',
   'data-mode="harden"',
+  'data-scenario="unavailable"',
+  'data-scenario="uncertain"',
+  'data-scenario="review"',
+  'Context unavailable',
+  'Result uncertain',
+  'Human review required',
   'does not collect, store, transmit, or score a choice',
+  'This drill stores no state, sends no request',
+  'ArrowRight',
+  'ArrowLeft',
   'prefers-reduced-motion',
   'https://github.com/virtualmase/mase',
   'proof/'
@@ -29,10 +38,12 @@ for (const token of prohibited) {
 }
 
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(match => match[1]);
-if (scripts.length !== 1) throw new Error(`Expected one inline script; found ${scripts.length}.`);
-new Function(scripts[0]);
+if (scripts.length !== 2) throw new Error(`Expected two inline scripts; found ${scripts.length}.`);
+scripts.forEach((script, index) => new Function(script) || console.log(`Parsed inline script ${index + 1}.`));
 
 const modes = (html.match(/data-mode="/g) || []).length;
+const scenarios = (html.match(/data-scenario="/g) || []).length;
 if (modes !== 4) throw new Error(`Expected four skill-directory modes; found ${modes}.`);
+if (scenarios !== 3) throw new Error(`Expected three resilience conditions; found ${scenarios}.`);
 
 console.log('MASE skill-directory quality check passed.');
