@@ -26,3 +26,9 @@ The footer is a public portfolio registry, not evidence that each linked propert
 ## Recheck trigger
 
 Revalidate this record when an address, domain, hosting relationship, portfolio ownership, contact policy, or public site route changes. Verify the source first, then production responses from both pages before stating that the surfaces are synchronized.
+
+## Live verification
+
+The GitHub Pages MASE directory was verified live after deployment run `33108363231`, which completed successfully for commit `c14dac3`. The public directory includes the resilience drill, three visible uncertainty conditions, and the local-only/no-data boundary.
+
+The virtualmase Vercel home page was visually reviewed at `https://virtualmase.vercel.app/` after direct production-response verification. The visible contact section includes the supplied phone number and six public email addresses. The production HTML for both `/` and `/mase.html` also includes all eight managed domains and the Hostinger/Vercel operations note in the footer registry.
