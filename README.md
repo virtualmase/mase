@@ -43,11 +43,16 @@ The first proof must be static, portable, and understandable without an account 
 
 Use a branch and a descriptive commit for material changes. Keep research citations with the claim they support. Do not put credentials, client material, personal data, or unapproved third-party assets in the repository. Do not publish an interactive agent, lead form, telemetry, or file upload without a documented data classification, owner, retention approach, and rollback path.
 
-The source is initially private while its structure, first proof, and public claims are reviewed. Publication status is an owner decision; the code and documentation are deliberately portable so they can be released without a platform rewrite.
+The source is public for inspection, reuse, and review. The code and documentation are deliberately portable so they can be released without a platform rewrite. Treat GitHub Pages as a public showcase only; do not add sensitive material, client material, credentials, or user-data collection without a new review.
 
 ## Current status
 
-**Stage:** Foundation and first-proof preparation.  
-**Owner:** Mason Nguyen / virtualmase.  
-**Repository:** `https://github.com/virtualmase/mase`.  
+**Stage:** Foundation and first-proof preparation.
+
+**Owner:** Mason Nguyen / virtualmase.
+
+**Repository:** [github.com/virtualmase/mase](https://github.com/virtualmase/mase).
+
+**Skill directory:** [virtualmase.github.io/mase](https://virtualmase.github.io/mase/).
+
 **Related public surface:** [virtualmase MASE prototype](https://virtualmase.vercel.app/mase.html).
